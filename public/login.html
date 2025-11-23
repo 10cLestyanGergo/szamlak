@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Bejelentkezés</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="auth">
+      <h1>Bejelentkezés</h1>
+      <form id="loginForm">
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="password" type="password" placeholder="Jelszó" required />
+        <button type="submit">Bejelentkezés</button>
+      </form>
+      <p>Nem regisztrált? <a href="/register.html">Regisztráció</a></p>
+    </main>
+
+    <script>
+      const tokenKey = "szamla_token";
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const body = { email: fd.get("email"), password: fd.get("password") };
+          const res = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            localStorage.setItem(tokenKey, data.token);
+            location.href = "/";
+          } else {
+            const err = await res.json();
+            alert(err.error || "Hiba");
+          }
+        });
+    </script>
+  </body>
+</html>

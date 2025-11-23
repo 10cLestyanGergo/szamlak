@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Regisztráció</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="auth">
+      <h1>Regisztráció</h1>
+      <form id="regForm">
+        <input name="email" type="email" placeholder="Email" required />
+        <input name="password" type="password" placeholder="Jelszó" required />
+        <button type="submit">Regisztráció</button>
+      </form>
+      <p>Van már fiókja? <a href="/login.html">Bejelentkezés</a></p>
+    </main>
+
+    <script>
+      document
+        .getElementById("regForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const body = { email: fd.get("email"), password: fd.get("password") };
+          const res = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            alert("Regisztráció sikeres, jelentkezzen be");
+            location.href = "/login.html";
+          } else {
+            const err = await res.json();
+            alert(err.error || "Hiba");
+          }
+        });
+    </script>
+  </body>
+</html>
